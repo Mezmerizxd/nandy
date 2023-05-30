@@ -1,2 +1,2 @@
-cmake ./firmware -B ./build/firmware
-make -C ./build/firmware
+cmake ./Flasher -B ./build/Flasher
+make -C ./build/Flasher

@@ -1,0 +1,1 @@
+dotnet build ./Controller/Controller.sln -c Release
