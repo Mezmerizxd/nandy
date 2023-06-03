@@ -25,6 +25,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
     tinyusb_device_unmarked
+    hardware_pio
+	hardware_spi
+	hardware_dma
 )
 
 # create map/bin/hex/uf2 file in addition to ELF.

@@ -5,7 +5,7 @@ namespace NandyFlasher
   void Xbox::Init()
   {
     printf("Xbox initialized.\n");
-  }
+    }
 
   uint32_t Xbox::GetFlashConfig()
   {
