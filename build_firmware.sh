@@ -1,14 +1,14 @@
 #!/bin/bash
 
 windows() {
-  cmake ./Flasher -B./build/Flasher -G "MinGW Makefiles"
-  mingw32-make -j4 -C ./build/Flasher
+  cmake ./Flasher -B./build/flasher -G "MinGW Makefiles"
+  mingw32-make -j4 -C ./build/flasher
   return
 };
 
 linux() {
-  cmake ./Flasher -B./build/Flasher
-  make -j4 -C ./build/Flasher
+  cmake ./Flasher -B./build/flasher
+  make -j4 -C ./build/flasher
   return
 };
 

@@ -14,6 +14,18 @@
 
 #define LED_PIN 25
 
+// Commands
+#define GET_VERSION 0x00
+#define GET_STATUS 0x01
+
+#pragma pack(push, 1)
+struct Command
+{
+    uint8_t command;
+    uint32_t lba;
+};
+#pragma pack(pop)
+
 void led_blink(void)
 {
     static uint32_t start_ms = 0;
@@ -28,6 +40,55 @@ void led_blink(void)
 
     gpio_put(LED_PIN, led_state);
     led_state = 1 - led_state;
+}
+
+void tud_mount_cb(void)
+{
+}
+
+void tud_umount_cb(void)
+{
+}
+
+void tud_suspend_cb(bool remote_wakeup_en)
+{
+    (void)remote_wakeup_en;
+}
+
+void tud_resume_cb(void)
+{
+}
+
+void tud_cdc_rx_cb(uint8_t itf)
+{
+    (void)itf;
+    led_blink();
+
+    uint32_t avilable_data = tud_cdc_available();
+
+    if (avilable_data < sizeof(Command))
+        return;
+
+    Command cmd;
+
+    tud_cdc_read(&cmd, sizeof(Command));
+
+    switch (cmd.command)
+    {
+    case GET_VERSION:
+        tud_cdc_write("Flasher v0.1", 12);
+        break;
+    case GET_STATUS:
+        tud_cdc_write("Status: OK", 10);
+        break;
+    }
+
+    tud_cdc_write_flush();
+}
+
+void tud_cdc_tx_complete_cb(uint8_t itf)
+{
+    (void)itf;
 }
 
 int main()
@@ -54,6 +115,5 @@ int main()
     {
         tud_task();
         printf("Runtime: %d\n", runtime++);
-        led_blink();
     }
 }

@@ -28,47 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ConsoleOutput = new TextBox();
             FindNandy = new Button();
+            SerialPortDevices = new ListBox();
+            GetNandFlasher = new GroupBox();
+            GetNandFlasher.SuspendLayout();
             SuspendLayout();
-            // 
-            // ConsoleOutput
-            // 
-            ConsoleOutput.BackColor = SystemColors.InfoText;
-            ConsoleOutput.Font = new Font("Cascadia Code", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            ConsoleOutput.ForeColor = SystemColors.Control;
-            ConsoleOutput.Location = new Point(497, 12);
-            ConsoleOutput.Multiline = true;
-            ConsoleOutput.Name = "ConsoleOutput";
-            ConsoleOutput.ReadOnly = true;
-            ConsoleOutput.Size = new Size(275, 437);
-            ConsoleOutput.TabIndex = 0;
             // 
             // FindNandy
             // 
-            FindNandy.Location = new Point(12, 12);
+            FindNandy.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            FindNandy.Location = new Point(6, 27);
             FindNandy.Name = "FindNandy";
-            FindNandy.Size = new Size(93, 23);
+            FindNandy.Size = new Size(147, 23);
             FindNandy.TabIndex = 1;
             FindNandy.Text = "Find Nandy";
             FindNandy.UseVisualStyleBackColor = true;
+            FindNandy.Click += FindNandy_Click;
+            // 
+            // SerialPortDevices
+            // 
+            SerialPortDevices.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            SerialPortDevices.FormattingEnabled = true;
+            SerialPortDevices.ItemHeight = 15;
+            SerialPortDevices.Location = new Point(6, 56);
+            SerialPortDevices.Name = "SerialPortDevices";
+            SerialPortDevices.Size = new Size(147, 214);
+            SerialPortDevices.TabIndex = 2;
+            SerialPortDevices.SelectedIndexChanged += SerialPortDevices_SelectedIndexChanged;
+            // 
+            // GetNandFlasher
+            // 
+            GetNandFlasher.Controls.Add(SerialPortDevices);
+            GetNandFlasher.Controls.Add(FindNandy);
+            GetNandFlasher.Location = new Point(12, 12);
+            GetNandFlasher.Name = "GetNandFlasher";
+            GetNandFlasher.Size = new Size(159, 277);
+            GetNandFlasher.TabIndex = 3;
+            GetNandFlasher.TabStop = false;
+            GetNandFlasher.Text = "Get Nand Flasher";
             // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
-            Controls.Add(FindNandy);
-            Controls.Add(ConsoleOutput);
+            Controls.Add(GetNandFlasher);
             Name = "Dashboard";
             Text = "Dashboard";
+            GetNandFlasher.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private TextBox ConsoleOutput;
         private Button FindNandy;
+        private ListBox SerialPortDevices;
+        private GroupBox GetNandFlasher;
     }
 }
