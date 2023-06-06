@@ -26,6 +26,8 @@ struct Command
 };
 #pragma pack(pop)
 
+uint32_t Version = 0x00000001;
+
 void led_blink(void)
 {
     static uint32_t start_ms = 0;
@@ -69,18 +71,13 @@ void tud_cdc_rx_cb(uint8_t itf)
     if (avilable_data < sizeof(Command))
         return;
 
-    Command cmd;
+    Command Command;
 
-    tud_cdc_read(&cmd, sizeof(Command));
+    uint32_t received = tud_cdc_read(&Command, sizeof(Command));
 
-    switch (cmd.command)
+    if (Command.command == GET_VERSION)
     {
-    case GET_VERSION:
-        tud_cdc_write("Flasher v0.1", 12);
-        break;
-    case GET_STATUS:
-        tud_cdc_write("Status: OK", 10);
-        break;
+        tud_cdc_write(&Version, sizeof(Version));
     }
 
     tud_cdc_write_flush();

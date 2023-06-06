@@ -27,14 +27,21 @@ namespace Controller
     {
       SelectedSerialDevice = SerialPortDevices.SelectedItem.ToString();
       Logger.Log("Selected port: " + SelectedSerialDevice, Logger.TYPE.INFO);
-      
+
       if (SelectedSerialDevice != null)
       {
         Device.Initialize(SelectedSerialDevice);
-      } else
+      }
+      else
       {
         Logger.Log("No port selected", Logger.TYPE.WARNING);
       }
+
+      Device.Use((d) =>
+      {
+        var version = Device.GetVersion(d);
+        Logger.Log("Device version: " + version, Logger.TYPE.INFO);
+      });
     }
   }
 }
