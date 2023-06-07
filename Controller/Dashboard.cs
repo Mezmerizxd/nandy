@@ -36,11 +36,21 @@ namespace Controller
       {
         Logger.Log("No port selected", Logger.TYPE.WARNING);
       }
+    }
 
-      Device.Use((d) =>
+    private void GetVersion_Click(object sender, EventArgs e)
+    {
+      Device.Use((s) =>
       {
-        var version = Device.GetVersion(d);
-        Logger.Log("Device version: " + version, Logger.TYPE.INFO);
+        Device.Command c = new Device.Command();
+        c.command = Device.Commands.GET_VERSION;
+        c.lba = 0;
+
+        Device.SendCommand(s, c);
+
+        var version = (int)Device.ReceiveUInt32(s);
+        Logger.Log("Device version: " + version.ToString(), Logger.TYPE.INFO);
+        MessageBox.Show("Device version: " + version.ToString(), "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
       });
     }
   }

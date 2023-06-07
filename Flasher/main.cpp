@@ -28,6 +28,8 @@ struct Command
 
 uint32_t Version = 0x00000001;
 
+bool connection_made = false;
+
 void led_blink(void)
 {
     static uint32_t start_ms = 0;
@@ -64,23 +66,34 @@ void tud_resume_cb(void)
 void tud_cdc_rx_cb(uint8_t itf)
 {
     (void)itf;
-    led_blink();
+
+    connection_made = true;
 
     uint32_t avilable_data = tud_cdc_available();
 
-    if (avilable_data < sizeof(Command))
-        return;
-
-    Command Command;
-
-    uint32_t received = tud_cdc_read(&Command, sizeof(Command));
-
-    if (Command.command == GET_VERSION)
+    uint32_t needed_data = sizeof(struct Command);
     {
-        tud_cdc_write(&Version, sizeof(Version));
+        uint8_t Command;
+        tud_cdc_peek(&Command);
     }
 
-    tud_cdc_write_flush();
+    if (avilable_data >= needed_data)
+    {
+        struct Command Command;
+        uint32_t received = tud_cdc_read(&Command, sizeof(Command));
+
+        if (received != sizeof(Command))
+            return;
+
+        if (Command.command == GET_VERSION)
+        {
+            tud_cdc_write(&Version, sizeof(Version));
+            tud_cdc_write_flush();
+            avilable_data = tud_cdc_available(); // check if there is more data available
+        }
+    }
+
+    connection_made = false;
 }
 
 void tud_cdc_tx_complete_cb(uint8_t itf)
@@ -107,10 +120,13 @@ int main()
 
     g_xbox.Init();
 
-    int runtime = 0;
     while (1)
     {
         tud_task();
-        printf("Runtime: %d\n", runtime++);
+
+        if (connection_made)
+        {
+            led_blink();
+        }
     }
 }
