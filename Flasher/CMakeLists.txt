@@ -15,6 +15,8 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME}
     main.cpp
     usb_descriptors.c
+    core/core.cpp
+    commands/commands.cpp
     xbox/xbox.cpp
 )
 

@@ -12,7 +12,7 @@ namespace Controller
     public enum Commands : byte
     {
       GET_VERSION = 0x00,
-      GET_STATUS = 0x01,
+      DEBUG_TOGGLE_BLINK = 0x01,
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -179,6 +179,35 @@ namespace Controller
           throw new System.Exception("Failed to receive data");
         }
         return BitConverter.ToSingle(rxbuffer, 0);
+      }
+      catch (System.Exception e)
+      {
+        Logger.Log("Failed to receive data, " + e.ToString(), Logger.TYPE.ERROR);
+        throw;
+      }
+    }
+
+    public static bool? ReceiveBool(SerialPort d)
+    {
+      if (d == null)
+      {
+        Logger.Log("Failed to send command, device not initialized", Logger.TYPE.ERROR);
+        return null;
+      }
+      try
+      {
+        byte[] rxbuffer = new byte[1];
+        int got = 0;
+
+        while (got < rxbuffer.Length)
+          got += d.Read(rxbuffer, got, rxbuffer.Length - got);
+
+        if (got != rxbuffer.Length)
+        {
+          Logger.Log("Failed to receive data, got " + got + " bytes, expected " + rxbuffer.Length + " bytes", Logger.TYPE.ERROR);
+          throw new System.Exception("Failed to receive data");
+        }
+        return BitConverter.ToBoolean(rxbuffer, 0);
       }
       catch (System.Exception e)
       {

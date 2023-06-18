@@ -1,12 +1,9 @@
-#include <stdint.h>
-#include <stdio.h>
-
 namespace NandyFlasher
 {
   class Xbox
   {
   public:
-    void Init();
+    void Initialize();
 
     uint32_t GetFlashConfig();
 

@@ -1,50 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "bsp/board.h"
-#include "hardware/vreg.h"
-#include "hardware/clocks.h"
-#include "pico/stdlib.h"
-#include "pico/bootrom.h"
-
-#include "tusb.h"
-
-#include "xbox/xbox.hpp"
-
-#define LED_PIN 25
-
-// Commands
-#define GET_VERSION 0x00
-#define GET_STATUS 0x01
-
-#pragma pack(push, 1)
-struct Command
-{
-    uint8_t command;
-    uint32_t lba;
-};
-#pragma pack(pop)
-
-uint32_t Version = 0x00000001;
-
-bool connection_made = false;
-
-void led_blink(void)
-{
-    static uint32_t start_ms = 0;
-    static bool led_state = false;
-
-    uint32_t now = board_millis();
-
-    if (now - start_ms < 50)
-        return;
-
-    start_ms = now;
-
-    gpio_put(LED_PIN, led_state);
-    led_state = 1 - led_state;
-}
+#include "common.hpp"
 
 void tud_mount_cb(void)
 {
@@ -67,33 +21,33 @@ void tud_cdc_rx_cb(uint8_t itf)
 {
     (void)itf;
 
-    connection_made = true;
+    uint32_t Version = 1;
 
     uint32_t avilable_data = tud_cdc_available();
 
-    uint32_t needed_data = sizeof(struct Command);
+    uint32_t needed_data = sizeof(struct NandyFlasher::Command);
     {
-        uint8_t Command;
-        tud_cdc_peek(&Command);
+        uint8_t cmd;
+        tud_cdc_peek(&cmd);
     }
 
     if (avilable_data >= needed_data)
     {
-        struct Command Command;
-        uint32_t received = tud_cdc_read(&Command, sizeof(Command));
+        struct NandyFlasher::Command cmd;
+        uint32_t received = tud_cdc_read(&cmd, sizeof(cmd));
 
-        if (received != sizeof(Command))
+        if (received != sizeof(cmd))
             return;
 
-        if (Command.command == GET_VERSION)
-        {
-            tud_cdc_write(&Version, sizeof(Version));
-            tud_cdc_write_flush();
-            avilable_data = tud_cdc_available(); // check if there is more data available
-        }
-    }
+        NandyFlasher::g_commands.Update(cmd);
 
-    connection_made = false;
+        // if (cmd.command == 0x00)
+        // {
+        //     tud_cdc_write(&Version, sizeof(Version));
+        //     tud_cdc_write_flush();
+        //     avilable_data = tud_cdc_available(); // check if there is more data available
+        // }
+    }
 }
 
 void tud_cdc_tx_complete_cb(uint8_t itf)
@@ -103,30 +57,13 @@ void tud_cdc_tx_complete_cb(uint8_t itf)
 
 int main()
 {
-    using namespace NandyFlasher;
 
-    vreg_set_voltage(VREG_VOLTAGE_1_30);
-    set_sys_clock_khz(266000, true);
-
-    uint32_t freq = clock_get_hz(clk_sys);
-    clock_configure(clk_peri, 0, CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLK_SYS, freq, freq);
-
-    stdio_init_all();
-
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-
-    tusb_init();
-
-    g_xbox.Init();
+    NandyFlasher::g_core.Initialize();
+    NandyFlasher::g_commands.Initialize();
+    NandyFlasher::g_xbox.Initialize();
 
     while (1)
     {
-        tud_task();
-
-        if (connection_made)
-        {
-            led_blink();
-        }
+        NandyFlasher::g_core.Update();
     }
 }

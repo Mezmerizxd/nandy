@@ -2,6 +2,8 @@
   "cmake.sourceDirectory": "C:/Data/Repositorys/nandy/flasher",
   "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
   "files.associations": {
-    "cstddef": "cpp"
+    "cstddef": "cpp",
+    "common.hpp": "c",
+    "cstdint": "cpp"
   }
 }

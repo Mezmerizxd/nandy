@@ -1,11 +1,11 @@
-#include "xbox.hpp"
+#include "../common.hpp"
 
 namespace NandyFlasher
 {
-  void Xbox::Init()
+  void Xbox::Initialize()
   {
     printf("Xbox initialized.\n");
-    }
+  }
 
   uint32_t Xbox::GetFlashConfig()
   {
