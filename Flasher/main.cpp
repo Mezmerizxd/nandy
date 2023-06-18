@@ -21,8 +21,6 @@ void tud_cdc_rx_cb(uint8_t itf)
 {
     (void)itf;
 
-    uint32_t Version = 1;
-
     uint32_t avilable_data = tud_cdc_available();
 
     uint32_t needed_data = sizeof(struct NandyFlasher::Command);
@@ -40,13 +38,6 @@ void tud_cdc_rx_cb(uint8_t itf)
             return;
 
         NandyFlasher::g_commands.Update(cmd);
-
-        // if (cmd.command == 0x00)
-        // {
-        //     tud_cdc_write(&Version, sizeof(Version));
-        //     tud_cdc_write_flush();
-        //     avilable_data = tud_cdc_available(); // check if there is more data available
-        // }
     }
 }
 
