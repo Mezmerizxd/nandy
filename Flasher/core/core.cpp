@@ -12,7 +12,7 @@ void led_blink(void)
 
   start_ms = now;
 
-  gpio_put(25, led_state);
+  gpio_put(ONBOARD_LED_PIN, led_state);
   led_state = 1 - led_state;
 }
 
@@ -30,8 +30,8 @@ namespace NandyFlasher
 
     stdio_init_all();
 
-    gpio_init(25);
-    gpio_set_dir(25, GPIO_OUT);
+    gpio_init(ONBOARD_LED_PIN);
+    gpio_set_dir(ONBOARD_LED_PIN, GPIO_OUT);
 
     tusb_init();
   }

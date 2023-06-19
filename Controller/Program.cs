@@ -36,6 +36,8 @@ namespace Controller
         Logger.Log("Running on unknown platform", Logger.TYPE.WARNING);
       }
 
+      Server.Start();
+
       Application.Run(dashboard);
     }
   }

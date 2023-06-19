@@ -187,12 +187,12 @@ namespace Controller
       }
     }
 
-    public static bool? ReceiveBool(SerialPort d)
+    public static bool ReceiveBool(SerialPort d)
     {
       if (d == null)
       {
         Logger.Log("Failed to send command, device not initialized", Logger.TYPE.ERROR);
-        return null;
+        return false;
       }
       try
       {
