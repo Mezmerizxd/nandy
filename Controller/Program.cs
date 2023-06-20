@@ -36,7 +36,11 @@ namespace Controller
         Logger.Log("Running on unknown platform", Logger.TYPE.WARNING);
       }
 
-      Server.Start();
+      Thread TServer = new Thread(Server.Start);
+      TServer.Start();
+
+      Thread TSockets = new Thread(Sockets.Start);
+      TSockets.Start();
 
       Application.Run(dashboard);
     }
